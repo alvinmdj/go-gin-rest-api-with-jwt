@@ -6,6 +6,14 @@ Product REST API with CRUD & Login & Register
 - Authorization multi-level user
 - Authorization access product by ID
 
+Flow:
+
+user register -> user login -> login success -> generate token
+
+admin -> all product authorization -> CRUD product
+
+user -> product authorization by ID -> create & read product
+
 ## Dependencies
 
 - `go get github.com/asaskevich/govalidator`
