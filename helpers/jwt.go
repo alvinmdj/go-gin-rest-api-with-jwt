@@ -50,7 +50,7 @@ func VerifyToken(c *gin.Context) (interface{}, error) {
 	})
 
 	// check if token still valid after casting into type of jwt.MapClaims
-	if _, ok := token.Claims.(jwt.MapClaims); !ok && !token.Valid {
+	if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
 		return nil, errResponse
 	}
 
