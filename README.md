@@ -1,5 +1,7 @@
 # Go Gin REST API with JWT
 
+[Postman](https://documenter.getpostman.com/view/16534190/2s93RXrAJB)
+
 Product REST API with CRUD & Login & Register
 
 - Authentication
