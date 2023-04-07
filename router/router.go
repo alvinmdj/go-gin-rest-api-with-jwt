@@ -1,7 +1,6 @@
 package router
 
 import (
-	"go-gin-rest-api-with-jwt/controllers"
 	"go-gin-rest-api-with-jwt/database"
 	"go-gin-rest-api-with-jwt/handlers"
 	"go-gin-rest-api-with-jwt/middlewares"
@@ -14,6 +13,10 @@ import (
 func StartApp() *gin.Engine {
 	db := database.GetDB()
 
+	userRepo := repositories.UserRepoImpl(db)
+	userSvc := services.UserSvcImpl(userRepo)
+	userHdl := handlers.UserHdlImpl(userSvc)
+
 	productRepo := repositories.ProductRepoImpl(db)
 	productSvc := services.ProductSvcImpl(productRepo)
 	productHdl := handlers.ProductHdlImpl(productSvc)
@@ -24,8 +27,8 @@ func StartApp() *gin.Engine {
 	{
 		userRouter := v1.Group("/users")
 		{
-			userRouter.POST("/register", controllers.UserRegister)
-			userRouter.POST("/login", controllers.UserLogin)
+			userRouter.POST("/register", userHdl.Register)
+			userRouter.POST("/login", userHdl.Login)
 		}
 
 		productRouter := v1.Group("/products")
