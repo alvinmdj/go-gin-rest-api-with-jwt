@@ -8,6 +8,8 @@ Product REST API with CRUD & Login & Register
 - Authorization multi-level user
 - Authorization access product by ID
 
+Update: dependency injections (router <-> handler <-> service <-> repository) and service unit tests
+
 Flow:
 
 user register -> user login -> login success -> generate token
@@ -25,6 +27,7 @@ user -> product authorization by ID -> create & read product
 - `go get gorm.io/driver/postgres`
 - `go get gorm.io/gorm`
 - `go get github.com/joho/godotenv`
+- `go get github.com/stretchr/testify`
 
 ## Setup DB (Postgres)
 
@@ -37,3 +40,7 @@ user -> product authorization by ID -> create & read product
 ## Create random string
 
 `openssl rand -base64 32`
+
+## Run test
+
+`go test -v ./services`
