@@ -9,10 +9,50 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var productRepo = &repositories.ProductRepoMock{Mock: mock.Mock{}}
-var productSvcMock = productSvc{productRepo: productRepo}
+func TestProductSvc_FindAllSvcNotFound(t *testing.T) {
+	productRepo := &repositories.ProductRepoMock{Mock: mock.Mock{}}
+	productSvcMock := productSvc{productRepo: productRepo}
 
-func TestProductSvc_FindByIdNotSvcFound(t *testing.T) {
+	productRepo.Mock.On("FindAll").Return([]models.Product{}, "product not found")
+
+	product, err := productSvcMock.FindAllSvc()
+
+	assert.Equal(t, product, []models.Product{}, "product is an empty slice of struct")
+	assert.NotNil(t, err)
+	assert.Equal(t, "product not found", err.Error(), "error response has to be 'product not found'")
+}
+
+func TestProductSvc_FindAllSvcFound(t *testing.T) {
+	productRepo := &repositories.ProductRepoMock{Mock: mock.Mock{}}
+	productSvcMock := productSvc{productRepo: productRepo}
+
+	productsData := []models.Product{
+		{
+			Title:       "product 2",
+			Description: "description of product 2",
+			UserID:      2,
+		},
+		{
+			Title:       "product 3",
+			Description: "description of product 3",
+			UserID:      2,
+		},
+	}
+
+	productRepo.Mock.On("FindAll").Return(productsData, nil)
+
+	products, err := productSvcMock.FindAllSvc()
+
+	assert.Nil(t, err)
+	assert.NotNil(t, products)
+	assert.Equal(t, productsData[0].Title, products[0].Title, "product found is 'product 2'")
+	assert.Equal(t, productsData[1].Title, products[1].Title, "product found is 'product 3'")
+}
+
+func TestProductSvc_FindByIdSvcNotFound(t *testing.T) {
+	productRepo := &repositories.ProductRepoMock{Mock: mock.Mock{}}
+	productSvcMock := productSvc{productRepo: productRepo}
+
 	productRepo.Mock.On("FindById", 1).Return(models.Product{}, "product not found")
 
 	product, err := productSvcMock.FindByIdSvc(1)
@@ -23,6 +63,9 @@ func TestProductSvc_FindByIdNotSvcFound(t *testing.T) {
 }
 
 func TestProductSvc_FindByIdSvcFound(t *testing.T) {
+	productRepo := &repositories.ProductRepoMock{Mock: mock.Mock{}}
+	productSvcMock := productSvc{productRepo: productRepo}
+
 	productOne := models.Product{
 		Title:       "product 2",
 		Description: "description of product 2",
@@ -32,7 +75,6 @@ func TestProductSvc_FindByIdSvcFound(t *testing.T) {
 	productRepo.Mock.On("FindById", 2).Return(productOne, nil)
 
 	product, err := productSvcMock.FindByIdSvc(2)
-	_ = product
 
 	assert.Nil(t, err)
 	assert.NotNil(t, product)

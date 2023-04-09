@@ -12,7 +12,13 @@ type ProductRepoMock struct {
 }
 
 func (p *ProductRepoMock) FindAll() (products []models.Product, err error) {
-	return
+	args := p.Mock.Called()
+	if args.Get(1) != nil /* error */ {
+		return []models.Product{}, errors.New("product not found")
+	}
+
+	products = args.Get(0).([]models.Product)
+	return products, nil
 }
 
 func (p *ProductRepoMock) FindAllByUserId(userId uint) (products []models.Product, err error) {
